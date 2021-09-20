@@ -14,15 +14,15 @@ import (
 )
 
 var (
-	client                   = &http.Client{}
-	loginFileName            = "log.log"
-	studentDataFileName      = "NetworkLoginUsers.csv"
-	availableStuDataFileName = "availableData.csv"
+	Client                   = &http.Client{}
+	LoginFileName            = "log.log"
+	StudentDataFileName      = "NetworkLoginUsers.csv"
+	AvailableStuDataFileName = "availableData.csv"
 	logFileRaw               *os.File
 )
 
 func init() {
-	logFileRaw, err := os.OpenFile(loginFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
+	logFileRaw, err := os.OpenFile(LoginFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +40,7 @@ func login(user string, passwd string) bool {
 		"&upass=" + passwd +
 		"&0MKKey=123456&R1=0&R2=&R3=0&R6=0&para=00&v6ip=&terminal_type=1&lang=zh-cn&jsVersion=4.1.3&v=9779&lang=zh"
 	// get response
-	_, err := client.Get(loginUrl)
+	_, err := Client.Get(loginUrl)
 	if err != nil {
 
 		log.Println(err)
@@ -55,7 +55,7 @@ func login(user string, passwd string) bool {
 func checkNetwork() bool {
 	var statusUrl = "http://172.16.8.70/drcom/chkstatus?callback=dr1002&jsVersion=4.1&v=7808&lang=zh"
 	// get response
-	resp, _ := client.Get(statusUrl)
+	resp, _ := Client.Get(statusUrl)
 	// parse body
 	body, _ := ioutil.ReadAll(resp.Body)
 	var str = string(body)
@@ -75,7 +75,7 @@ func ReadCSV(fileName string) ([][]string, error) {
 	opencast, err := os.Open(fileName)
 	if err != nil {
 
-		log.Println(studentDataFileName + "打开失败")
+		log.Println(StudentDataFileName + "打开失败")
 		return nil, err
 	}
 	defer func(opencast *os.File) {
@@ -87,16 +87,16 @@ func ReadCSV(fileName string) ([][]string, error) {
 
 	Read := csv.NewReader(opencast)
 	read, _ := Read.ReadAll() //返回切片类型：[chen  hai wei]
-	log.Println("load " + studentDataFileName + "success")
+	log.Println("load " + StudentDataFileName + "success")
 
 	return read, nil
 }
 
 func AddAvailableUse(user string, passwd string) error {
-	opencast, err := os.OpenFile(availableStuDataFileName, os.O_RDWR|os.O_CREATE, 0666)
+	opencast, err := os.OpenFile(AvailableStuDataFileName, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 
-		log.Println("load" + availableStuDataFileName + " fail")
+		log.Println("load" + AvailableStuDataFileName + " fail")
 		return err
 	}
 	defer func(opencast *os.File) {
