@@ -1,4 +1,4 @@
-package sit_network_auth_go
+package lib
 
 import (
 	"encoding/csv"
@@ -18,7 +18,7 @@ var (
 	LoginFileName            = "log.log"
 	StudentDataFileName      = "NetworkLoginUsers.csv"
 	AvailableStuDataFileName = "availableData.csv"
-	logFileRaw               *os.File
+	LogFileRaw               *os.File
 )
 
 func init() {
@@ -34,7 +34,7 @@ func splitString(r rune) bool {
 	return r == '(' || r == ')'
 }
 
-func login(user string, passwd string) bool {
+func Login(user string, passwd string) bool {
 	var loginUrl = "http://172.16.8.70/drcom/login?callback=dr1003&" +
 		"DDDDD=" + user +
 		"&upass=" + passwd +
@@ -52,7 +52,7 @@ func login(user string, passwd string) bool {
 
 }
 
-func checkNetwork() bool {
+func CheckNetwork() bool {
 	var statusUrl = "http://172.16.8.70/drcom/chkstatus?callback=dr1002&jsVersion=4.1&v=7808&lang=zh"
 	// get response
 	resp, _ := Client.Get(statusUrl)
